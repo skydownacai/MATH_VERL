@@ -7,8 +7,8 @@ run_name=validate-pretrain
 
 export CUDA_DEVICE_MAX_CONNECTIONS=1 # For megatron communication/computation overlapping
 
-train_path=/data/personal/datasets/DeepScaleR-Preview/train.parquet
-test_path=/data/personal/datasets/retool_aime2024/train.parquet
+train_path=../datasets/DeepScaleR-Preview/train.parquet
+test_path=../datasets/retool_aime2024/train.parquet
 
 PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo --config-path=config \
  --config-name='ppo_megatron_trainer.yaml'\
