@@ -8,10 +8,10 @@ export YOUR_RUN_NAME="JustRL-grpo-$(date +%Y%m%d-%H%M%S)"
 
 export CUDA_DEVICE_MAX_CONNECTIONS=1 # For megatron communication/computation overlapping
 
-train_path=/data/personal/datasets/DeepScaleR-Preview/train.parquet
-test_path=/data/personal/datasets/retool_aime2024/train.parquet
-rollout_data_root=/data/personal/MATH_VERL/outputs/rollout_data
-validation_data_root=/data/personal/MATH_VERL/outputs/validate_data
+train_path=../datasets/DeepScaleR-Preview/train.parquet
+test_path=../datasets/retool_aime2024/train.parquet
+rollout_data_root=./outputs/rollout_data
+validation_data_root=./outputs/validate_data
 rollout_data_dir="$rollout_data_root/$YOUR_PROJECT_NAME/$YOUR_RUN_NAME"
 validation_data_dir="$validation_data_root/$YOUR_PROJECT_NAME/$YOUR_RUN_NAME"
 

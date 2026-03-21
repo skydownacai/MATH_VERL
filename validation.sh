@@ -4,12 +4,12 @@ export HF_ENDPOINT="https://hf-mirror.com"
 
 project_name=DeepScaleR-grpo
 run_name=DeepScaleR-grpo-20260308-150837
-ckpt_path=/data/personal/MATH_VERL/checkpoints/${project_name}/${run_name}/global_step_100
+ckpt_path=./checkpoints/${project_name}/${run_name}/global_step_100
 
 export CUDA_DEVICE_MAX_CONNECTIONS=1 # For megatron communication/computation overlapping
 
-train_path=/data/personal/datasets/DeepScaleR-Preview/train.parquet
-test_path=/data/personal/datasets/retool_aime2024/train.parquet
+train_path=../datasets/DeepScaleR-Preview/train.parquet
+test_path=../datasets/retool_aime2024/train.parquet
 
 PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo --config-path=config \
  --config-name='ppo_megatron_trainer.yaml'\
