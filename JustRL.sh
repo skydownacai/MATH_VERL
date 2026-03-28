@@ -10,6 +10,7 @@ export YOUR_RUN_NAME="JustRL-grpo-trainset-dapo-kl"
 export CUDA_DEVICE_MAX_CONNECTIONS=1 # For megatron communication/computation overlapping
 
 train_path=../datasets/retool_dapo/train.parquet
+train_path=../datasets/retool_dapo/train.parquet
 test_path=../datasets/retool_aime2024/train.parquet
 rollout_data_root=./outputs/rollout_data
 validation_data_root=./outputs/validate_data
@@ -61,8 +62,10 @@ PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo --config-path=config \
  trainer.rollout_data_dir="$rollout_data_dir" \
  +trainer.validation_data_dir="$validation_data_dir" \
  trainer.val_before_train=True \
+ trainer.log_val_generations=64 \
  trainer.n_gpus_per_node=2 \
  trainer.nnodes=1 \
+ trainer.save_freq=200 \
  trainer.save_freq=200 \
  trainer.test_freq=10 \
  trainer.total_epochs=3 2>&1 | tee $YOUR_PROJECT_NAME.log \
