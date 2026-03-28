@@ -1,14 +1,15 @@
 set -x
 
 export HF_ENDPOINT="https://hf-mirror.com"
-export YOUR_PROJECT_NAME="JustRL-grpo"
-export YOUR_RUN_NAME="JustRL-grpo-$(date +%Y%m%d-%H%M%S)"
+export YOUR_PROJECT_NAME="MATH_VERL"
+# export YOUR_RUN_NAME="JustRL-grpo-trainset-dapo-$(date +%Y%m%d-%H%M%S)"
+export YOUR_RUN_NAME="JustRL-grpo-trainset-dapo-kl"
 
 # export NVTE_DEBUG=1 NVTE_DEBUG_LEVEL=2
 
 export CUDA_DEVICE_MAX_CONNECTIONS=1 # For megatron communication/computation overlapping
 
-train_path=../datasets/DeepScaleR-Preview/train.parquet
+train_path=../datasets/retool_dapo/train.parquet
 test_path=../datasets/retool_aime2024/train.parquet
 rollout_data_root=./outputs/rollout_data
 validation_data_root=./outputs/validate_data
@@ -34,6 +35,9 @@ PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo --config-path=config \
     actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu=1 \
     actor_rollout_ref.actor.megatron.pipeline_model_parallel_size=1 \
     actor_rollout_ref.actor.megatron.tensor_model_parallel_size=2 \
+    actor_rollout_ref.actor.use_kl_loss=True \
+    actor_rollout_ref.actor.kl_loss_coef=0.001 \
+    actor_rollout_ref.actor.kl_loss_type=low_var_kl \
     actor_rollout_ref.actor.entropy_coeff=0 \
     actor_rollout_ref.actor.clip_ratio_low=0.2 \
     actor_rollout_ref.actor.clip_ratio_high=0.28 \
@@ -59,6 +63,6 @@ PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo --config-path=config \
  trainer.val_before_train=True \
  trainer.n_gpus_per_node=2 \
  trainer.nnodes=1 \
- trainer.save_freq=50 \
+ trainer.save_freq=200 \
  trainer.test_freq=10 \
  trainer.total_epochs=3 2>&1 | tee $YOUR_PROJECT_NAME.log \

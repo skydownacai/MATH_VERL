@@ -3,7 +3,7 @@ import os
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--rollout_path", type=str, default="/data/personal/MATH_VERL/outputs/rollout_data", help="Path to the rollout data directory.")
+parser.add_argument("--rollout_path", type=str, default="./outputs/rollout_data", help="Path to the rollout data directory.")
 parser.add_argument("--project_name", type=str, help="Name of the project to read rollouts from.", default="DeepScaleR-grpo")
 parser.add_argument("--run_name", type=str, help="Name of the run to read rollouts from.", default="DeepScaleR-grpo-20260305-082905")
 parser.add_argument("--step", type=int, help="Step number of the rollout to read.", default=1)

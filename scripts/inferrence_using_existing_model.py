@@ -3,7 +3,7 @@ import torch
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--model_path", type=str, default="/data/personal/MATH_VERL/checkpoints/DeepScaleR-grpo/DeepScaleR-grpo-20260305-082905",\
+parser.add_argument("--model_path", type=str, default="./checkpoints/DeepScaleR-grpo/DeepScaleR-grpo-20260305-082905",\
     help="Path to the model checkpoint directory.")
 parser.add_argument("--prompt", type=str, default="What is the derivative of sin(x)?", help="The prompt to feed into the model for inference.")
 parser.add_argument("--global_step", type=int, default=-1, help="The global step number of the model checkpoint to load. If -1, load the latest checkpoint.")
