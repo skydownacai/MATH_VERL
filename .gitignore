@@ -2,3 +2,4 @@ checkpoints/
 outputs/
 wandb/
 *.log
+*.sh

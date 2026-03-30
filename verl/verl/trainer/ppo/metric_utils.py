@@ -251,6 +251,34 @@ def compute_advantage_histogram(batch: DataProto, bins: int = 50) -> tuple[np.nd
     return np.histogram(valid_advantages_np, bins=bins)
 
 
+def compute_advantage_distribution(
+    histogram: tuple[np.ndarray, np.ndarray],
+) -> dict[str, np.ndarray] | None:
+    """Convert advantage histogram into normalized distribution arrays.
+
+    Args:
+        histogram: A tuple of (counts, bin_edges), same format as np.histogram.
+
+    Returns:
+        Dict with bin_centers, probability, cdf and counts; None when histogram is empty.
+    """
+    counts, bin_edges = histogram
+    total = np.sum(counts)
+    if total <= 0:
+        return None
+
+    bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2.0
+    probability = counts.astype(np.float64) / float(total)
+    cdf = np.cumsum(probability)
+
+    return {
+        "bin_centers": bin_centers,
+        "probability": probability,
+        "cdf": cdf,
+        "counts": counts,
+    }
+
+
 def compute_timing_metrics(batch: DataProto, timing_raw: dict[str, float]) -> dict[str, Any]:
     """
     Computes timing metrics for different processing stages in PPO training.

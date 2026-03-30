@@ -43,6 +43,7 @@ from verl.trainer.config import AlgoConfig
 from verl.trainer.ppo import core_algos
 from verl.trainer.ppo.core_algos import AdvantageEstimator, agg_loss
 from verl.trainer.ppo.metric_utils import (
+    compute_advantage_distribution,
     compute_advantage_histogram,
     compute_data_metrics,
     compute_throughout_metrics,
@@ -1609,6 +1610,46 @@ class RayPPOTrainer:
                             step=self.global_steps,
                             backend=["wandb"],
                         )
+
+                        advantage_distribution = compute_advantage_distribution(advantage_histogram)
+                        if advantage_distribution is not None:
+                            distribution_table = wandb.Table(
+                                columns=["advantage", "probability", "cdf", "count"],
+                                data=[
+                                    [
+                                        float(adv),
+                                        float(prob),
+                                        float(cdf),
+                                        int(count),
+                                    ]
+                                    for adv, prob, cdf, count in zip(
+                                        advantage_distribution["bin_centers"],
+                                        advantage_distribution["probability"],
+                                        advantage_distribution["cdf"],
+                                        advantage_distribution["counts"],
+                                        strict=True,
+                                    )
+                                ],
+                            )
+
+                            logger.log(
+                                data={
+                                    "critic/advantages/distribution": wandb.plot.line(
+                                        distribution_table,
+                                        "advantage",
+                                        "probability",
+                                        title="Advantage Distribution",
+                                    ),
+                                    "critic/advantages/cdf": wandb.plot.line(
+                                        distribution_table,
+                                        "advantage",
+                                        "cdf",
+                                        title="Advantage CDF",
+                                    ),
+                                },
+                                step=self.global_steps,
+                                backend=["wandb"],
+                            )
 
                 progress_bar.update(1)
                 self.global_steps += 1

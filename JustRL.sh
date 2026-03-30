@@ -3,7 +3,7 @@ set -x
 export HF_ENDPOINT="https://hf-mirror.com"
 export YOUR_PROJECT_NAME="MATH_VERL"
 # export YOUR_RUN_NAME="JustRL-grpo-trainset-dapo-$(date +%Y%m%d-%H%M%S)"
-export YOUR_RUN_NAME="JustRL-grpo-trainset-dapo-kl"
+export YOUR_RUN_NAME="JustRL-grpo-trainset-dapo-resume-with-adaptive-kl"
 
 # export NVTE_DEBUG=1 NVTE_DEBUG_LEVEL=2
 
@@ -16,6 +16,7 @@ rollout_data_root=./outputs/rollout_data
 validation_data_root=./outputs/validate_data
 rollout_data_dir="$rollout_data_root/$YOUR_PROJECT_NAME/$YOUR_RUN_NAME"
 validation_data_dir="$validation_data_root/$YOUR_PROJECT_NAME/$YOUR_RUN_NAME"
+checkpoint_dir="./checkpoints/MATH_VERL/JustRL-grpo-trainset-dapo"    # Resume from checkpoint.
 
 mkdir -p "$rollout_data_dir"
 mkdir -p "$validation_data_dir"
@@ -23,6 +24,10 @@ mkdir -p "$validation_data_dir"
 PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo --config-path=config \
  --config-name='ppo_megatron_trainer.yaml'\
  algorithm.adv_estimator=grpo \
+ algorithm.use_kl_in_reward=True \
+ algorithm.kl_penalty=low_var_kl \
+ algorithm.kl_ctrl.type=adaptive \
+ algorithm.kl_ctrl.target_kl=0.1 \
  data.train_files="$train_path" \
  data.val_files="$test_path" \
  data.train_batch_size=64 \
@@ -54,11 +59,12 @@ PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo --config-path=config \
     actor_rollout_ref.model.use_remove_padding=True \
     actor_rollout_ref.model.enable_gradient_checkpointing=True \
     actor_rollout_ref.model.enable_activation_offload=True \
-    algorithm.use_kl_in_reward=False \
     trainer.critic_warmup=0 \
  trainer.logger='["console","wandb"]' \
  trainer.project_name=$YOUR_PROJECT_NAME \
  trainer.experiment_name=$YOUR_RUN_NAME \
+ trainer.resume_mode=auto \
+ trainer.default_local_dir="$checkpoint_dir" \
  trainer.rollout_data_dir="$rollout_data_dir" \
  +trainer.validation_data_dir="$validation_data_dir" \
  trainer.val_before_train=True \
